@@ -56,7 +56,7 @@ class StorageInfoCard extends StatelessWidget {
                     "$numOfFiles Files",
                     style: Theme.of(context)
                         .textTheme
-                        .caption
+                        .bodySmall
                         ?.copyWith(color: Colors.white),
                   )
                 ],

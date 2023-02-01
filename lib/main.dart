@@ -1,9 +1,20 @@
-import 'package:dashboard/constants.dart';
-import 'package:dashboard/screens/main/main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
+import 'package:dashboard/constants.dart';
+
+import './firebase_options.dart';
+
+import 'package:dashboard/screens/main/main_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 

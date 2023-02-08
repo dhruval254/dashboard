@@ -1,11 +1,13 @@
-import 'package:dashboard/constants.dart';
-import 'package:dashboard/models/recent_file.dart';
-import 'package:dashboard/screens/dashboard/components/header.dart';
-import 'package:dashboard/screens/dashboard/components/storage_details.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../constants.dart';
+import '../../models/recent_file.dart';
+import '../../responsive.dart';
+import 'components/header.dart';
 import 'components/my_files.dart';
+import 'components/storage_details.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -75,16 +77,23 @@ class DashboardScreen extends StatelessWidget {
                           ],
                         ),
                       ),
+                      if (Responsive.isMobile(context))
+                        const SizedBox(
+                          height: defaultPadding,
+                        ),
+                      if (Responsive.isMobile(context)) const StorageDetails(),
                     ],
                   ),
                 ),
-                const SizedBox(
-                  width: defaultPadding,
-                ),
-                const Expanded(
-                  flex: 2,
-                  child: StorageDetails(),
-                ),
+                if (!Responsive.isMobile(context))
+                  const SizedBox(
+                    width: defaultPadding,
+                  ),
+                if (!Responsive.isMobile(context))
+                  const Expanded(
+                    flex: 2,
+                    child: StorageDetails(),
+                  ),
               ],
             ),
           ],

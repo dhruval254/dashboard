@@ -1,7 +1,9 @@
-import 'package:dashboard/constants.dart';
-import 'package:dashboard/models/my_files.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../constants.dart';
+import '../../../models/my_files.dart';
 
 class FileInfoCard extends StatelessWidget {
   const FileInfoCard({

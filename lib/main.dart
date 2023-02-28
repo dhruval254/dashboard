@@ -7,8 +7,8 @@ import 'package:firebase_core/firebase_core.dart';
 import './firebase_options.dart';
 
 import 'constants.dart';
-import 'controllers/menu_controller.dart';
-import 'screens/main/main_screen.dart';
+import 'widgets/menu_helper.dart';
+import 'screens/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Admin Panel',
+        title: 'Admin Panel',
         theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: bgColor,
           textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)

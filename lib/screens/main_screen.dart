@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../controllers/menu_controller.dart';
-import '../dashboard/dashboard_screen.dart';
-import './../../responsive.dart';
-import './components/side_menu.dart';
+import '../widgets/menu_helper.dart';
+import 'dashboard_screen.dart';
+import '../responsive.dart';
+import '../widgets/side_menu.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});

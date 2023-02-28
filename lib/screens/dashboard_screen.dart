@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../constants.dart';
-import '../../models/recent_file.dart';
-import '../../responsive.dart';
-import 'components/header.dart';
-import 'components/my_files.dart';
-import 'components/storage_details.dart';
+import '../constants.dart';
+import '../models/recent_file.dart';
+import '../responsive.dart';
+import '../widgets/header.dart';
+import '../widgets/my_files.dart';
+import '../widgets/storage_details.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});

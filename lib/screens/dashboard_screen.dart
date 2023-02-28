@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants.dart';
 import '../models/recent_file.dart';
-import '../responsive.dart';
 import '../widgets/header.dart';
 import '../widgets/my_files.dart';
 import '../widgets/storage_details.dart';
@@ -34,7 +33,6 @@ class DashboardScreen extends StatelessWidget {
                       const SizedBox(
                         height: defaultPadding,
                       ),
-                      // Reference to an enclosing class method cannot be extracted. (    extract widget from here , put it in screens/dashboard/components and file name = recent_files.dart and widget name =  RecentFiles()    )
                       Container(
                         padding: const EdgeInsets.all(defaultPadding),
                         decoration: const BoxDecoration(
@@ -77,19 +75,12 @@ class DashboardScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      if (Responsive.isMobile(context))
-                        const SizedBox(
-                          height: defaultPadding,
-                        ),
-                      if (Responsive.isMobile(context)) const StorageDetails(),
                     ],
                   ),
                 ),
-                if (!Responsive.isMobile(context))
                   const SizedBox(
                     width: defaultPadding,
                   ),
-                if (!Responsive.isMobile(context))
                   const Expanded(
                     flex: 2,
                     child: StorageDetails(),

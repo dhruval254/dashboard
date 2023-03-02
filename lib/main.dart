@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import './firebase_options.dart';
 
 import 'constants.dart';
+import 'router.dart';
 import 'screens/main_screen.dart';
 
 void main() async {
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
             .apply(bodyColor: Colors.white),
         canvasColor: secondaryColor,
       ),
+      onGenerateRoute: (routeSettings) => generateRoute(routeSettings),
       home: const MainScreen(),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:dashboard/screens/add_product.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
@@ -28,7 +29,11 @@ class MyFiles extends StatelessWidget {
                   vertical: defaultPadding,
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  AddProduct.routeName,
+                );
+              },
               icon: const Icon(Icons.add),
               label: const Text("Add New"),
             ),

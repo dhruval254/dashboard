@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../screens/transactions_screen.dart';
 import 'drawer_list_tile.dart';
 
 
@@ -25,7 +26,11 @@ class SideMenu extends StatelessWidget {
             DrawerListTile(
               title: "Transaction",
               svgSrc: "assets/icons/menu_tran.svg",
-              press: () {},
+              press: () {
+                Navigator.of(context).pushNamed(
+                  Transactions.routeName,
+                );
+              },
             ),
             DrawerListTile(
               title: "Task",

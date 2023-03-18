@@ -4,6 +4,8 @@ import 'dashboard_screen.dart';
 import '../widgets/side_menu.dart';
 
 class MainScreen extends StatelessWidget {
+  
+  static const String routeName = '/';
   const MainScreen({super.key});
 
   @override

@@ -1,13 +1,14 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dashboard/widgets/custom_textbox.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 import '../constants.dart';
+import '../models/product_model.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/side_menu.dart';
 
@@ -37,6 +38,7 @@ class _AddProductState extends State<AddProduct> {
   List<String> imageUrls = [];
   bool isSaving = false;
   bool isUploading = false;
+  var uuid = Uuid();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,7 @@ class _AddProductState extends State<AddProduct> {
                       child: Column(
                         children: <Widget>[
                           CustomTextbox(
-                            textEditingController: productNameCtrl,
+                            // textEditingController: productNameCtrl,
                             validator: (v) {
                               if (v!.isEmpty) {
                                 return "It cannot be empty.";
@@ -72,7 +74,7 @@ class _AddProductState extends State<AddProduct> {
                             height: 20,
                           ),
                           CustomTextbox(
-                            textEditingController: detailCtrl,
+                            // textEditingController: detailCtrl,
                             validator: (v) {
                               if (v!.isEmpty) {
                                 return "It cannot be empty.";
@@ -86,7 +88,7 @@ class _AddProductState extends State<AddProduct> {
                             height: 20,
                           ),
                           CustomTextbox(
-                            textEditingController: priceCtrl,
+                            // textEditingController: priceCtrl,
                             validator: (v) {
                               if (v!.isEmpty) {
                                 return "It cannot be empty.";
@@ -99,7 +101,7 @@ class _AddProductState extends State<AddProduct> {
                             height: 20,
                           ),
                           CustomTextbox(
-                            textEditingController: discountPriceCtrl,
+                            // textEditingController: discountPriceCtrl,
                             validator: (v) {
                               if (v!.isEmpty) {
                                 return "It cannot be empty.";
@@ -112,7 +114,7 @@ class _AddProductState extends State<AddProduct> {
                             height: 20,
                           ),
                           CustomTextbox(
-                            textEditingController: serialCodeCtrl,
+                            // textEditingController: serialCodeCtrl,
                             validator: (v) {
                               if (v!.isEmpty) {
                                 return "It cannot be empty.";
@@ -180,36 +182,56 @@ class _AddProductState extends State<AddProduct> {
                               ),
                               itemCount: images.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return Stack(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.black,
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.transparent,
+                                          ),
+                                        ),
+                                        child: Image.network(
+                                          File(images[index].path).path,
+                                          height: 200,
+                                          width: 200,
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
-                                      child: Image.network(
-                                        File(images[index].path).path,
-                                        height: 200,
-                                        width: 200,
-                                        fit: BoxFit.cover,
+                                      IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            images.removeAt(index);
+                                          });
+                                        },
+                                        // ignore: prefer_const_constructors
+                                        icon: Icon(
+                                          Icons.cancel_outlined,
+                                        ),
                                       ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          images.removeAt(index);
-                                        });
-                                      },
-                                      icon: const Icon(
-                                        Icons.cancel_outlined,
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 );
                               },
                             ),
                           ),
+                          SwitchListTile(
+                              title: const Text("Is this on Sale ?"),
+                              value: isOnSale,
+                              onChanged: (v) {
+                                setState(() {
+                                  isOnSale = !isOnSale;
+                                });
+                              }),
+                          SwitchListTile(
+                              title: const Text("Is this Popular ?"),
+                              value: isPopular,
+                              onChanged: (v) {
+                                setState(() {
+                                  isPopular = !isPopular;
+                                });
+                              }),
                           CustomButton(
                             title: "Save",
                             isLoginButton: true,
@@ -236,18 +258,51 @@ class _AddProductState extends State<AddProduct> {
       isSaving = true;
     });
     await uploadImages();
-    await FirebaseFirestore.instance
-        .collection("products")
-        .add({"images": imageUrls}).whenComplete(() {
+    await Products.addProducts(Products(
+      category: selectedValue,
+      id: uuid.v4(),
+      productName: productNameCtrl.text,
+      detail: detailCtrl.text,
+      price: int.parse(priceCtrl.text),
+      discountPrice: int.parse(discountPriceCtrl.text),
+      serialCode: serialCodeCtrl.text,
+      imageUrls: imageUrls,
+      isSale: isOnSale,
+      isPopular: isPopular,
+      isFavourite: isFavourite,
+    )).whenComplete(() {
       setState(() {
         isSaving = false;
-        images.clear();
         imageUrls.clear();
+        images.clear();
+        // clearFields();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Success"),
+          ),
+        );
       });
     });
+    // await FirebaseFirestore.instance
+    //     .collection("products")
+    //     .add({"images": imageUrls}).whenComplete(() {
+    //   setState(() {
+    //     isSaving = false;
+    //     images.clear();
+    //     imageUrls.clear();
+    //   });
+    // });
   }
 
 // issues
+  // clearFields() {
+  //   // selectedValue = "";
+  //   productNameCtrl.clear();
+  //   priceCtrl.clear();
+  //   discountPriceCtrl.clear();
+  //   detailCtrl.clear();
+  //   serialCodeCtrl.clear();
+  // }
 
   pickImage() async {
     final List<XFile>? pickImage = await imagePicker.pickMultiImage();
@@ -264,9 +319,9 @@ class _AddProductState extends State<AddProduct> {
     setState(() {
       isUploading = true;
     });
-    String urls;
+    String? urls;
     Reference ref =
-        FirebaseStorage.instance.ref().child("images").child(imageFile!.path);
+        FirebaseStorage.instance.ref().child("products").child(imageFile!.name);
     if (kIsWeb) {
       await ref.putData(
         await imageFile.readAsBytes(),

@@ -1,8 +1,9 @@
+import 'package:dashboard/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/login_screen.dart';
 import '../screens/transactions_screen.dart';
 import 'drawer_list_tile.dart';
-
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
@@ -21,7 +22,11 @@ class SideMenu extends StatelessWidget {
             DrawerListTile(
               title: "Dashboard",
               svgSrc: "assets/icons/menu_dashbord.svg",
-              press: () {},
+              press: () {
+                Navigator.of(context).pushNamed(
+                  MainScreen.routeName,
+                );
+              },
             ),
             DrawerListTile(
               title: "Transaction",
@@ -62,6 +67,24 @@ class SideMenu extends StatelessWidget {
               svgSrc: "assets/icons/menu_setting.svg",
               press: () {},
             ),
+            DrawerListTile(
+              title: "Login",
+              svgSrc: 'assets/icons/Search.svg',
+              press: () {
+                Navigator.of(context).pushNamed(
+                  LoginScreen.routeName,
+                );
+              },
+            ),
+            // DrawerListTile(
+            //   title: "Update",
+            //   svgSrc: 'assets/icons/folder.svg',
+            //   press: () {
+            //     Navigator.of(context).pushNamed(
+            //       UpdateProduct.routeName,
+            //     );
+            //   },
+            // ),
           ],
         ),
       ),

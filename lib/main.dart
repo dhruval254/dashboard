@@ -30,9 +30,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    FirebaseAuth.instance.signInWithEmailAndPassword(email: "saritayadav1609@gmail.com", password: "test1234");
+    FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: "saritayadav1609@gmail.com", password: "test1234");
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

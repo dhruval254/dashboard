@@ -61,7 +61,7 @@ class _AddProductState extends State<AddProduct> {
                       child: Column(
                         children: <Widget>[
                           CustomTextbox(
-                            // textEditingController: productNameCtrl,
+                            textEditingController: productNameCtrl,
                             validator: (v) {
                               if (v!.isEmpty) {
                                 return "It cannot be empty.";
@@ -74,7 +74,7 @@ class _AddProductState extends State<AddProduct> {
                             height: 20,
                           ),
                           CustomTextbox(
-                            // textEditingController: detailCtrl,
+                            textEditingController: detailCtrl,
                             validator: (v) {
                               if (v!.isEmpty) {
                                 return "It cannot be empty.";
@@ -88,7 +88,7 @@ class _AddProductState extends State<AddProduct> {
                             height: 20,
                           ),
                           CustomTextbox(
-                            // textEditingController: priceCtrl,
+                            textEditingController: priceCtrl,
                             validator: (v) {
                               if (v!.isEmpty) {
                                 return "It cannot be empty.";
@@ -101,7 +101,7 @@ class _AddProductState extends State<AddProduct> {
                             height: 20,
                           ),
                           CustomTextbox(
-                            // textEditingController: discountPriceCtrl,
+                            textEditingController: discountPriceCtrl,
                             validator: (v) {
                               if (v!.isEmpty) {
                                 return "It cannot be empty.";
@@ -114,7 +114,7 @@ class _AddProductState extends State<AddProduct> {
                             height: 20,
                           ),
                           CustomTextbox(
-                            // textEditingController: serialCodeCtrl,
+                            textEditingController: serialCodeCtrl,
                             validator: (v) {
                               if (v!.isEmpty) {
                                 return "It cannot be empty.";

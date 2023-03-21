@@ -28,8 +28,11 @@ class DatabaseService {
       'category': category,
       'detail': detail,
       'imageList': null,
+      'stock': stock,
       'price': price,
-      'discountPrice': discount,
+      'discount': discount,
+      'isOnSale': isOnSale,
+      'isPopular': isPopular,
     });
 
     for (Uint8List element in productImageList) {
@@ -47,5 +50,11 @@ class DatabaseService {
       'uid': productDoc.id,
       'imageList': FieldValue.arrayUnion(productImageLinkList),
     });
+  }
+
+  Future<QuerySnapshot> getProducts() async {
+    QuerySnapshot productData = await productCollection.get();
+
+    return productData;
   }
 }

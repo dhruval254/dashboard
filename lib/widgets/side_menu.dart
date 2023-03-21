@@ -1,9 +1,11 @@
-import 'package:dashboard/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 
+import 'drawer_list_tile.dart';
+
+import '../screens/main_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/transactions_screen.dart';
-import 'drawer_list_tile.dart';
+import '../screens/product_screen.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
@@ -23,10 +25,6 @@ class SideMenu extends StatelessWidget {
               title: "Dashboard",
               svgSrc: "assets/icons/menu_dashbord.svg",
               press: () {
-                // Navigator.of(context).pushNamed(
-                //   MainScreen.routeName,
-                // );
-
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   MainScreen.routeName,
                   (route) => false,
@@ -37,10 +35,6 @@ class SideMenu extends StatelessWidget {
               title: "Transaction",
               svgSrc: "assets/icons/menu_tran.svg",
               press: () {
-                // Navigator.of(context).pushNamed(
-                //   Transactions.routeName,
-                // );
-
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   Transactions.routeName,
                   (route) => false,
@@ -48,43 +42,24 @@ class SideMenu extends StatelessWidget {
               },
             ),
             DrawerListTile(
-              title: "Task",
+              title: "Orders",
               svgSrc: "assets/icons/menu_task.svg",
               press: () {},
             ),
             DrawerListTile(
-              title: "Documents",
-              svgSrc: "assets/icons/menu_doc.svg",
-              press: () {},
-            ),
-            DrawerListTile(
-              title: "Store",
+              title: "Products",
               svgSrc: "assets/icons/menu_store.svg",
-              press: () {},
-            ),
-            DrawerListTile(
-              title: "Notification",
-              svgSrc: "assets/icons/menu_notification.svg",
-              press: () {},
-            ),
-            DrawerListTile(
-              title: "Profile",
-              svgSrc: "assets/icons/menu_profile.svg",
-              press: () {},
-            ),
-            DrawerListTile(
-              title: "Settings",
-              svgSrc: "assets/icons/menu_setting.svg",
-              press: () {},
+              press: () {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  ProductScreen.routeName,
+                  (route) => false,
+                );
+              },
             ),
             DrawerListTile(
               title: "Login",
               svgSrc: 'assets/icons/Search.svg',
               press: () {
-                // Navigator.of(context).pushNamed(
-                //   LoginScreen.routeName,
-                // );
-
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   LoginScreen.routeName,
                   (route) => false,

@@ -11,16 +11,33 @@ import '../widgets/custom_textbox.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/side_menu.dart';
 
-class ProductEditorScreen extends StatefulWidget {
-  static const String routeName = '/add-product';
+class ProductEditorScreen extends StatelessWidget {
+  static const String routeName = '/product-editor';
+
   const ProductEditorScreen({super.key});
 
   @override
-  State<ProductEditorScreen> createState() => _AddProductState();
+  Widget build(BuildContext context) {
+    final Map? modalArgs =
+        ModalRoute.of(context)?.settings.arguments as Map<dynamic, dynamic>?;
+
+    return ProductEditor(modalArgs);
+  }
 }
 
-class _AddProductState extends State<ProductEditorScreen> {
+class ProductEditor extends StatefulWidget {
+  final Map? args;
+
+  const ProductEditor(this.args, {super.key});
+
+  @override
+  State<ProductEditor> createState() => _ProductEditorState();
+}
+
+class _ProductEditorState extends State<ProductEditor> {
+  var _isEditing = false;
   final _formKey = GlobalKey<FormState>();
+
   String productName = '';
   String productDetail = '';
   int productStock = 0;
@@ -34,13 +51,21 @@ class _AddProductState extends State<ProductEditorScreen> {
   bool isSaving = false;
   bool isUploading = false;
 
+  @override
+  void initState() {
+    if (widget.args != null && widget.args?['isEditing'] != null) {
+      _isEditing = widget.args?['isEditing'];
+
+      isOnSale = widget.args?['isOnSale'];
+      isPopular = widget.args?['isPopular'];
+    }
+
+    super.initState();
+  }
+
   Future selectImage() async {
     FilePickerResult? fileResult = await FilePicker.platform.pickFiles();
-    // XFile? xFile;
-    // File? image;
     Uint8List? imageBytes;
-
-    // xFile = await imagePicker.pickImage(source: ImageSource.gallery);
 
     if (fileResult != null) {
       imageBytes = fileResult.files.first.bytes;
@@ -51,12 +76,6 @@ class _AddProductState extends State<ProductEditorScreen> {
         });
       }
     }
-
-    // if (image != null) {
-    //   setState(() {
-    //     productImageList.add(image!);
-    //   });
-    // }
   }
 
   Future postProduct() async {
@@ -105,9 +124,15 @@ class _AddProductState extends State<ProductEditorScreen> {
 
       setState(() {
         isSaving = false;
+        _formKey.currentState!.reset();
+        productImageList.clear();
+        isOnSale = false;
+        isPopular = false;
       });
     }
   }
+
+  Future updateProduct(String productId) async {}
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +156,8 @@ class _AddProductState extends State<ProductEditorScreen> {
                       child: Column(
                         children: <Widget>[
                           CustomTextbox(
+                            initValue:
+                                _isEditing ? widget.args!['productName'] : null,
                             labelData: "Product Name",
                             validator: (v) {
                               if (v == null || v.isEmpty) {
@@ -161,6 +188,9 @@ class _AddProductState extends State<ProductEditorScreen> {
                             ),
                             child: SingleChildScrollView(
                               child: TextFormField(
+                                initialValue: _isEditing
+                                    ? widget.args!['productDetail']
+                                    : null,
                                 maxLines: null,
                                 keyboardType: TextInputType.multiline,
                                 cursorColor: grey,
@@ -190,6 +220,9 @@ class _AddProductState extends State<ProductEditorScreen> {
                             height: 20,
                           ),
                           CustomTextbox(
+                            initValue: _isEditing
+                                ? widget.args!['productStock']
+                                : null,
                             textInputType: TextInputType.number,
                             labelData: "Product Stock",
                             validator: (v) {
@@ -210,6 +243,9 @@ class _AddProductState extends State<ProductEditorScreen> {
                             height: 20,
                           ),
                           CustomTextbox(
+                            initValue: _isEditing
+                                ? widget.args!['productPrice']
+                                : null,
                             textInputType: TextInputType.number,
                             labelData: "Product Price",
                             validator: (v) {
@@ -230,7 +266,10 @@ class _AddProductState extends State<ProductEditorScreen> {
                             height: 20,
                           ),
                           CustomTextbox(
-                            labelData: "Discount Price",
+                            initValue: _isEditing
+                                ? widget.args!['productDiscount']
+                                : null,
+                            labelData: "Discount",
                             textInputType: TextInputType.number,
                             validator: (v) {
                               if (v != null) {
@@ -252,57 +291,64 @@ class _AddProductState extends State<ProductEditorScreen> {
                             height: 20,
                           ),
                           Container(
-                              padding: const EdgeInsets.only(left: 10),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 0.5,
-                                  color: lightGrey,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
+                            padding: const EdgeInsets.only(left: 10),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 0.5,
+                                color: lightGrey,
                               ),
-                              child: DropdownButtonFormField(
-                                hint: Container(
-                                  margin: const EdgeInsets.only(left: 40),
-                                  child: const Text(
-                                    'Select type',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w100,
-                                    ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: DropdownButtonFormField(
+                              value:
+                                  _isEditing ? widget.args!['category'] : null,
+                              hint: Container(
+                                margin: const EdgeInsets.only(left: 40),
+                                child: const Text(
+                                  'Select type',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w100,
                                   ),
                                 ),
-                                borderRadius: BorderRadius.circular(20),
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'dog',
+                                  child: Text('Dog'),
                                 ),
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: 'dog',
-                                    child: Text('Dog'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'cat',
-                                    child: Text('Cat'),
-                                  ),
-                                ],
-                                validator: (value) {
-                                  if (value == null) {
-                                    return 'Please choose your pet type';
-                                  }
+                                DropdownMenuItem(
+                                  value: 'cat',
+                                  child: Text('Cat'),
+                                ),
+                              ],
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Please choose your product type';
+                                }
 
-                                  return null;
-                                },
-                                onChanged: (value) {
-                                  productCategory = value!;
-                                },
-                              )),
+                                return null;
+                              },
+                              onChanged: (value) {
+                                if (value != null) {
+                                  productCategory = value.toString();
+                                }
+                              },
+                            ),
+                          ),
                           const SizedBox(
                             height: 20,
                           ),
-                          CustomButton(
-                            title: "Select Images",
-                            onPress: selectImage,
-                            isLoginButton: true,
-                          ),
+                          !_isEditing
+                              ? CustomButton(
+                                  title: "Select Images",
+                                  onPress: selectImage,
+                                  isLoginButton: true,
+                                )
+                              : const SizedBox(),
                           Container(
                             height: 150,
                             decoration: BoxDecoration(
@@ -357,19 +403,46 @@ class _AddProductState extends State<ProductEditorScreen> {
                                 });
                               }),
                           SwitchListTile(
-                              title: const Text("Is this Popular ?"),
-                              value: isPopular,
-                              onChanged: (v) {
-                                setState(() {
-                                  isPopular = !isPopular;
-                                });
-                              }),
-                          CustomButton(
-                            title: "Save",
-                            isLoginButton: true,
-                            onPress: postProduct,
-                            isLoading: isSaving,
-                          )
+                            title: const Text("Is this Popular ?"),
+                            value: isPopular,
+                            onChanged: (v) {
+                              setState(() {
+                                isPopular = !isPopular;
+                              });
+                            },
+                          ),
+                          InkWell(
+                            onTap: () {
+                              if (!isSaving) {
+                                if (_isEditing) {
+                                  updateProduct(widget.args!['petId']);
+                                } else {
+                                  postProduct();
+                                }
+                              } else {
+                                () {};
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              height: 60,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 17, vertical: 10),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.black),
+                              ),
+                              child: Center(
+                                child: isSaving
+                                    ? const CircularProgressIndicator()
+                                    : Text(
+                                        _isEditing ? 'Update' : 'Save',
+                                      ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),

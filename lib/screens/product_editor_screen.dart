@@ -11,15 +11,15 @@ import '../widgets/custom_textbox.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/side_menu.dart';
 
-class AddProduct extends StatefulWidget {
+class ProductEditorScreen extends StatefulWidget {
   static const String routeName = '/add-product';
-  const AddProduct({super.key});
+  const ProductEditorScreen({super.key});
 
   @override
-  State<AddProduct> createState() => _AddProductState();
+  State<ProductEditorScreen> createState() => _AddProductState();
 }
 
-class _AddProductState extends State<AddProduct> {
+class _AddProductState extends State<ProductEditorScreen> {
   final _formKey = GlobalKey<FormState>();
   String productName = '';
   String productDetail = '';

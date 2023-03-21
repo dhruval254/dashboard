@@ -1,4 +1,4 @@
-import 'package:dashboard/screens/add_product.dart';
+import 'package:dashboard/screens/product_editor_screen.dart';
 import 'package:dashboard/screens/login_screen.dart';
 import 'package:dashboard/screens/main_screen.dart';
 import 'package:dashboard/screens/transactions_screen.dart';
@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
   switch (routeSettings.name) {
-    case AddProduct.routeName:
+    case ProductEditorScreen.routeName:
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (context) => const AddProduct(),
+        builder: (context) => const ProductEditorScreen(),
       );
 
     // case UpdateProduct.routeName:

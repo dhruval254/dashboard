@@ -1,4 +1,4 @@
-import 'package:dashboard/screens/add_product.dart';
+import 'package:dashboard/screens/product_editor_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
@@ -31,7 +31,7 @@ class MyFiles extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.of(context).pushNamed(
-                  AddProduct.routeName,
+                  ProductEditorScreen.routeName,
                 );
               },
               icon: const Icon(Icons.add),

@@ -1,14 +1,13 @@
-import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:dashboard/widgets/custom_textbox.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
+import 'package:file_picker/file_picker.dart';
 
 import '../constants.dart';
-import '../models/product_model.dart';
+
+import '../services/database_service.dart';
+
+import '../widgets/custom_textbox.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/side_menu.dart';
 
@@ -21,24 +20,94 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
-  TextEditingController categoryCtrl = TextEditingController();
-  TextEditingController idCtrl = TextEditingController();
-  TextEditingController productNameCtrl = TextEditingController();
-  TextEditingController detailCtrl = TextEditingController();
-  TextEditingController priceCtrl = TextEditingController();
-  TextEditingController discountPriceCtrl = TextEditingController();
-  TextEditingController serialCodeCtrl = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  String productName = '';
+  String productDetail = '';
+  int productStock = 0;
+  int productPrice = 0;
+  int productDiscount = 0;
+  String productCategory = '';
   bool isOnSale = false;
   bool isPopular = false;
-  bool isFavourite = false;
+  List<Uint8List> productImageList = [];
 
-  String? selectedValue;
-  final imagePicker = ImagePicker();
-  List<XFile> images = [];
-  List<String> imageUrls = [];
   bool isSaving = false;
   bool isUploading = false;
-  var uuid = Uuid();
+
+  Future selectImage() async {
+    FilePickerResult? fileResult = await FilePicker.platform.pickFiles();
+    // XFile? xFile;
+    // File? image;
+    Uint8List? imageBytes;
+
+    // xFile = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (fileResult != null) {
+      imageBytes = fileResult.files.first.bytes;
+
+      if (imageBytes != null) {
+        setState(() {
+          productImageList.add(imageBytes!);
+        });
+      }
+    }
+
+    // if (image != null) {
+    //   setState(() {
+    //     productImageList.add(image!);
+    //   });
+    // }
+  }
+
+  Future postProduct() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      setState(() {
+        isSaving = true;
+      });
+
+      if (productImageList.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please upload atleast one image'),
+          ),
+        );
+
+        setState(() {
+          isSaving = false;
+        });
+
+        return;
+      }
+
+      await DatabaseService().addProduct(
+        productName,
+        productCategory,
+        productDetail,
+        productStock,
+        productPrice,
+        productDiscount,
+        productImageList,
+        isPopular,
+        isOnSale,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Upload Complete,'),
+          ),
+        );
+
+        Navigator.of(context).pop();
+      }
+
+      setState(() {
+        isSaving = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,76 +127,31 @@ class _AddProductState extends State<AddProduct> {
                   padding: const EdgeInsets.all(60.0),
                   child: Center(
                     child: Form(
+                      key: _formKey,
                       child: Column(
                         children: <Widget>[
                           CustomTextbox(
-                            textEditingController: productNameCtrl,
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "It cannot be empty.";
-                              }
-                              return null;
-                            },
                             labelData: "Product Name",
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          CustomTextbox(
-                            textEditingController: detailCtrl,
                             validator: (v) {
-                              if (v!.isEmpty) {
+                              if (v == null || v.isEmpty) {
                                 return "It cannot be empty.";
                               }
+
                               return null;
                             },
-                            labelData: "Product Detail",
-                            maxLines: 7,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          CustomTextbox(
-                            textEditingController: priceCtrl,
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "It cannot be empty.";
-                              }
-                              return null;
+                            onSave: (v) {
+                              productName = v!;
                             },
-                            labelData: "Product Price",
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          CustomTextbox(
-                            textEditingController: discountPriceCtrl,
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "It cannot be empty.";
-                              }
-                              return null;
-                            },
-                            labelData: "Discount Price",
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          CustomTextbox(
-                            textEditingController: serialCodeCtrl,
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "It cannot be empty.";
-                              }
-                              return null;
-                            },
-                            labelData: "Product Serial Code",
                           ),
                           const SizedBox(
                             height: 20,
                           ),
                           Container(
-                            padding: const EdgeInsets.only(left: 10),
+                            height: 250,
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 30,
+                            ),
                             decoration: BoxDecoration(
                               border: Border.all(
                                 width: 0.5,
@@ -135,38 +159,148 @@ class _AddProductState extends State<AddProduct> {
                               ),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: DropdownButtonFormField(
-                                hint: const Text(
-                                  'Choose Category',
-                                ),
+                            child: SingleChildScrollView(
+                              child: TextFormField(
+                                maxLines: null,
+                                keyboardType: TextInputType.multiline,
+                                cursorColor: grey,
                                 decoration: const InputDecoration(
+                                  label: Text('Product Description'),
+                                  labelStyle: TextStyle(
+                                    color: lightGrey,
+                                  ),
                                   border: InputBorder.none,
                                 ),
                                 validator: (value) {
-                                  if (value == null) {
-                                    return "Category cannot be empty.";
+                                  if (value == null ||
+                                      value.isEmpty ||
+                                      value.length < 20) {
+                                    return 'Please tell us something about your pet';
                                   }
+
                                   return null;
                                 },
-                                value: selectedValue,
-                                items: categories
-                                    .map((e) => DropdownMenuItem<String>(
-                                        value: e, child: Text(e)))
-                                    .toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedValue = value.toString();
-                                  });
-                                }),
+                                onSaved: (value) {
+                                  productDetail = value!;
+                                },
+                              ),
+                            ),
                           ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          CustomTextbox(
+                            textInputType: TextInputType.number,
+                            labelData: "Product Stock",
+                            validator: (v) {
+                              if (v == null || v.isEmpty) {
+                                return "Stock cannot be empty.";
+                              }
+
+                              if (v.contains(RegExp(r'[a-z A-Z]'))) {
+                                return 'Alphabets are not allowed';
+                              }
+                              return null;
+                            },
+                            onSave: (v) {
+                              productStock = int.parse(v!);
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          CustomTextbox(
+                            textInputType: TextInputType.number,
+                            labelData: "Product Price",
+                            validator: (v) {
+                              if (v == null || v.isEmpty) {
+                                return "It cannot be empty.";
+                              }
+
+                              if (v.contains(RegExp(r'[a-z A-Z]'))) {
+                                return 'Alphabets are not allowed';
+                              }
+                              return null;
+                            },
+                            onSave: (v) {
+                              productPrice = int.parse(v!);
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          CustomTextbox(
+                            labelData: "Discount Price",
+                            textInputType: TextInputType.number,
+                            validator: (v) {
+                              if (v != null) {
+                                if (v.contains(RegExp(r'[a-z A-Z]'))) {
+                                  return 'Alphabets are not allowed';
+                                }
+
+                                if (int.parse(v) < 1 || int.parse(v) > 100) {
+                                  return 'Discount should be between 1% to 100%';
+                                }
+                              }
+                              return null;
+                            },
+                            onSave: (v) {
+                              productDiscount = int.parse(v!);
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                              padding: const EdgeInsets.only(left: 10),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 0.5,
+                                  color: lightGrey,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: DropdownButtonFormField(
+                                hint: Container(
+                                  margin: const EdgeInsets.only(left: 40),
+                                  child: const Text(
+                                    'Select type',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w100,
+                                    ),
+                                  ),
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: 'dog',
+                                    child: Text('Dog'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'cat',
+                                    child: Text('Cat'),
+                                  ),
+                                ],
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Please choose your pet type';
+                                  }
+
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  productCategory = value!;
+                                },
+                              )),
                           const SizedBox(
                             height: 20,
                           ),
                           CustomButton(
                             title: "Select Images",
-                            onPress: () {
-                              pickImage();
-                            },
+                            onPress: selectImage,
                             isLoginButton: true,
                           ),
                           Container(
@@ -180,7 +314,7 @@ class _AddProductState extends State<AddProduct> {
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 5,
                               ),
-                              itemCount: images.length,
+                              itemCount: productImageList.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -192,21 +326,19 @@ class _AddProductState extends State<AddProduct> {
                                             color: Colors.transparent,
                                           ),
                                         ),
-                                        child: Image.network(
-                                          File(images[index].path).path,
-                                          height: 200,
-                                          width: 200,
+                                        child: Image.memory(
+                                          productImageList[index],
+                                          height: 100,
+                                          width: 100,
                                           fit: BoxFit.cover,
                                         ),
                                       ),
                                       IconButton(
                                         onPressed: () {
-                                          setState(() {
-                                            images.removeAt(index);
-                                          });
+                                          productImageList.removeAt(index);
+                                          setState(() {});
                                         },
-                                        // ignore: prefer_const_constructors
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.cancel_outlined,
                                         ),
                                       ),
@@ -235,9 +367,7 @@ class _AddProductState extends State<AddProduct> {
                           CustomButton(
                             title: "Save",
                             isLoginButton: true,
-                            onPress: () {
-                              save();
-                            },
+                            onPress: postProduct,
                             isLoading: isSaving,
                           )
                         ],
@@ -251,93 +381,5 @@ class _AddProductState extends State<AddProduct> {
         ),
       ),
     );
-  }
-
-  save() async {
-    setState(() {
-      isSaving = true;
-    });
-    await uploadImages();
-    await Products.addProducts(Products(
-      category: selectedValue,
-      id: uuid.v4(),
-      productName: productNameCtrl.text,
-      detail: detailCtrl.text,
-      price: int.parse(priceCtrl.text),
-      discountPrice: int.parse(discountPriceCtrl.text),
-      serialCode: serialCodeCtrl.text,
-      imageUrls: imageUrls,
-      isSale: isOnSale,
-      isPopular: isPopular,
-      isFavourite: isFavourite,
-    )).whenComplete(() {
-      setState(() {
-        isSaving = false;
-        imageUrls.clear();
-        images.clear();
-        // clearFields();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Success"),
-          ),
-        );
-      });
-    });
-    // await FirebaseFirestore.instance
-    //     .collection("products")
-    //     .add({"images": imageUrls}).whenComplete(() {
-    //   setState(() {
-    //     isSaving = false;
-    //     images.clear();
-    //     imageUrls.clear();
-    //   });
-    // });
-  }
-
-// issues
-  // clearFields() {
-  //   // selectedValue = "";
-  //   productNameCtrl.clear();
-  //   priceCtrl.clear();
-  //   discountPriceCtrl.clear();
-  //   detailCtrl.clear();
-  //   serialCodeCtrl.clear();
-  // }
-
-  pickImage() async {
-    final List<XFile>? pickImage = await imagePicker.pickMultiImage();
-    if (pickImage != null) {
-      setState(() {
-        images.addAll(pickImage);
-      });
-    } else {
-      print("no images selected");
-    }
-  }
-
-  Future postImages(XFile? imageFile) async {
-    setState(() {
-      isUploading = true;
-    });
-    String? urls;
-    Reference ref =
-        FirebaseStorage.instance.ref().child("products").child(imageFile!.name);
-    if (kIsWeb) {
-      await ref.putData(
-        await imageFile.readAsBytes(),
-        SettableMetadata(contentType: "image/jpeg"),
-      );
-      urls = await ref.getDownloadURL();
-      setState(() {
-        isUploading = false;
-      });
-      return urls;
-    }
-  }
-
-  uploadImages() async {
-    for (var image in images) {
-      await postImages(image).then((downLoadUrl) => imageUrls.add(downLoadUrl));
-    }
   }
 }

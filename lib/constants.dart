@@ -7,9 +7,3 @@ const Color grey = Color(0XFF646379);
 const Color lightGrey = Color(0XFF838092);
 
 const defaultPadding = 16.0;
-
-List categories = [
-  "Pet Food",
-  "Pet Soap",
-  "Pet Shampoo",
-];

@@ -23,8 +23,13 @@ class SideMenu extends StatelessWidget {
               title: "Dashboard",
               svgSrc: "assets/icons/menu_dashbord.svg",
               press: () {
-                Navigator.of(context).pushNamed(
+                // Navigator.of(context).pushNamed(
+                //   MainScreen.routeName,
+                // );
+
+                Navigator.of(context).pushNamedAndRemoveUntil(
                   MainScreen.routeName,
+                  (route) => false,
                 );
               },
             ),
@@ -32,8 +37,13 @@ class SideMenu extends StatelessWidget {
               title: "Transaction",
               svgSrc: "assets/icons/menu_tran.svg",
               press: () {
-                Navigator.of(context).pushNamed(
+                // Navigator.of(context).pushNamed(
+                //   Transactions.routeName,
+                // );
+
+                Navigator.of(context).pushNamedAndRemoveUntil(
                   Transactions.routeName,
+                  (route) => false,
                 );
               },
             ),
@@ -71,20 +81,16 @@ class SideMenu extends StatelessWidget {
               title: "Login",
               svgSrc: 'assets/icons/Search.svg',
               press: () {
-                Navigator.of(context).pushNamed(
+                // Navigator.of(context).pushNamed(
+                //   LoginScreen.routeName,
+                // );
+
+                Navigator.of(context).pushNamedAndRemoveUntil(
                   LoginScreen.routeName,
+                  (route) => false,
                 );
               },
             ),
-            // DrawerListTile(
-            //   title: "Update",
-            //   svgSrc: 'assets/icons/folder.svg',
-            //   press: () {
-            //     Navigator.of(context).pushNamed(
-            //       UpdateProduct.routeName,
-            //     );
-            //   },
-            // ),
           ],
         ),
       ),

@@ -1,19 +1,22 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import './storage_service.dart';
 
-class DatabaseSerivce {
+class DatabaseService {
   final productCollection = FirebaseFirestore.instance.collection('products');
 
-  Future adProduct(
+  Future addProduct(
     String productName,
     String category,
     String detail,
+    int stock,
     int price,
     int discount,
-    List<File> productImageList,
+    List<Uint8List> productImageList,
+    bool isPopular,
+    bool isOnSale,
   ) async {
     String productImageLink;
     List<String> productImageLinkList = [];
@@ -29,7 +32,7 @@ class DatabaseSerivce {
       'discountPrice': discount,
     });
 
-    for (File element in productImageList) {
+    for (Uint8List element in productImageList) {
       productImageLink = await StorageService().uploadProductsImages(
         productDoc.id,
         element,

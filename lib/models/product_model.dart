@@ -16,7 +16,6 @@ class Products {
 
   Products({
     required this.category,
-    required this.id,
     required this.productName,
     required this.detail,
     required this.price,
@@ -30,7 +29,7 @@ class Products {
   });
 
   static Future<void> addProducts(Products products) async {
-  CollectionReference db = FirebaseFirestore.instance.collection("products");
+    CollectionReference db = FirebaseFirestore.instance.collection("products");
     Map<String, dynamic> data = {
       "category": products.category,
       "productName": products.productName,

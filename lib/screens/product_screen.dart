@@ -19,39 +19,74 @@ class _ProductScreenState extends State<ProductScreen> {
     return Scaffold(
       drawer: const SideMenu(),
       body: SafeArea(
-        child: FutureBuilder(
-          future: DatabaseService().getProducts(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Expanded(
+              child: SideMenu(),
+            ),
+            Expanded(
+              flex: 5,
+              child: FutureBuilder(
+                future: DatabaseService().getProducts(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-            if (snapshot.data == null) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    const Text(
-                      'Something Went Wrong...',
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {});
-                      },
-                      child: const Text(
-                        'Refresh',
+                  if (snapshot.data == null) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          const Text(
+                            'Something Went Wrong...',
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {});
+                            },
+                            child: const Text(
+                              'Refresh',
+                            ),
+                          ),
+                        ],
                       ),
+                    );
+                  }
+                  return Container(
+                    padding: const EdgeInsets.all(18),
+                    child: GridView.builder(
+                      itemCount: 7,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                              crossAxisSpacing: 20.0,
+                              mainAxisSpacing: 15.0),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                spreadRadius: 3,
+                                blurRadius: 5,
+                              )
+                            ],
+                            color: Colors.black,
+                          ),
+                        );
+                      },
                     ),
-                  ],
-                ),
-              );
-            }
-
-            return const Text('UI here');
-          },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

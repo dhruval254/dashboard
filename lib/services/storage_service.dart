@@ -34,4 +34,13 @@ class StorageService {
       }
     });
   }
+
+  Future<Uint8List?> downloadFile(String productId) async {
+    final uniqueFolder = productsFolder.child(productId);
+    final ref = uniqueFolder.child('0');
+
+    Uint8List? imageFile = await ref.getData();
+
+    return imageFile;
+  }
 }

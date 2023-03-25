@@ -232,7 +232,45 @@ class _ProductScreenState extends State<ProductScreen> {
                                       ),
                                     ),
                                     ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                'Delete?',
+                                              ),
+                                              content: const Text(
+                                                'Are you sure you want to delete this product?',
+                                              ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text(
+                                                    'No',
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    await DatabaseService()
+                                                        .deleteProducts(
+                                                      snapshot.data!.docs[index]
+                                                          ['uid'],
+                                                    );
+
+                                                    setState(() {});
+                                                  },
+                                                  child: const Text(
+                                                    'Yes',
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.red),
                                       child: const Text(

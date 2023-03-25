@@ -75,6 +75,12 @@ class DatabaseService {
     });
   }
 
+  Future deleteProducts(String productId) async {
+    StorageService().removeProductsImages(productId);
+
+    await productCollection.doc(productId).delete();
+  }
+
   Future<QuerySnapshot> getProducts() async {
     QuerySnapshot productData = await productCollection.get();
 

@@ -132,7 +132,45 @@ class _ProductEditorState extends State<ProductEditor> {
     }
   }
 
-  Future updateProduct(String productId) async {}
+  Future updateProduct(String productId) async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      setState(() {
+        isSaving = true;
+      });
+
+      await DatabaseService().updateProducts(
+        productId,
+        productName,
+        productCategory,
+        productDetail,
+        productStock,
+        productPrice,
+        productDiscount,
+        isPopular,
+        isOnSale,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Update Complete,'),
+          ),
+        );
+
+        Navigator.of(context).pop();
+      }
+
+      // setState(() {
+      //   isSaving = false;
+      //   _formKey.currentState!.reset();
+      //   productImageList.clear();
+      //   isOnSale = false;
+      //   isPopular = false;
+      // });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -299,45 +337,87 @@ class _ProductEditorState extends State<ProductEditor> {
                               ),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: DropdownButtonFormField(
-                              value:
-                                  _isEditing ? widget.args!['category'] : null,
-                              hint: Container(
-                                margin: const EdgeInsets.only(left: 40),
-                                child: const Text(
-                                  'Select type',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w100,
-                                  ),
-                                ),
-                              ),
-                              borderRadius: BorderRadius.circular(20),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                              ),
-                              items: const [
-                                DropdownMenuItem(
-                                  value: 'dog',
-                                  child: Text('Dog'),
-                                ),
-                                DropdownMenuItem(
-                                  value: 'cat',
-                                  child: Text('Cat'),
-                                ),
-                              ],
-                              validator: (value) {
-                                if (value == null) {
-                                  return 'Please choose your product type';
-                                }
+                            // child: DropdownButtonFormField(
+                            //   value:
+                            //       _isEditing ? widget.args!['category'] : null,
+                            //   hint: Container(
+                            //     margin: const EdgeInsets.only(left: 40),
+                            //     child: const Text(
+                            //       'Select type',
+                            //       style: TextStyle(
+                            //         fontWeight: FontWeight.w100,
+                            //       ),
+                            //     ),
+                            //   ),
+                            //   borderRadius: BorderRadius.circular(20),
+                            //   decoration: const InputDecoration(
+                            //     border: InputBorder.none,
+                            //   ),
+                            //   items: const [
+                            //     DropdownMenuItem(
+                            //       value: 'dog',
+                            //       child: Text('Dog'),
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       value: 'cat',
+                            //       child: Text('Cat'),
+                            //     ),
+                            //   ],
+                            //   validator: (value) {
+                            //     if (value == null) {
+                            //       return 'Please choose your product type';
+                            //     }
 
-                                return null;
-                              },
-                              onChanged: (value) {
-                                if (value != null) {
-                                  productCategory = value.toString();
-                                }
-                              },
-                            ),
+                            //     return null;
+                            //   },
+                            //   onChanged: (value) {
+                            //     if (value != null) {
+                            //       productCategory = value.toString();
+                            //     }
+                            //   },
+                            // ),
+                            child: !_isEditing
+                                ? DropdownButtonFormField(
+                                    hint: const Text('Select type'),
+                                    borderRadius: BorderRadius.circular(20),
+                                    decoration: const InputDecoration(
+                                      border: InputBorder.none,
+                                    ),
+                                    items: const [
+                                      DropdownMenuItem(
+                                        value: 'dog',
+                                        child: Text('Dog'),
+                                      ),
+                                      DropdownMenuItem(
+                                        value: 'cat',
+                                        child: Text('Cat'),
+                                      ),
+                                    ],
+                                    validator: _isEditing
+                                        ? (value) {
+                                            if (value == null) {
+                                              return 'Please choose your pet type';
+                                            }
+
+                                            return null;
+                                          }
+                                        : null,
+                                    onChanged: (value) {
+                                      productCategory = value!;
+                                    },
+                                  )
+                                : Container(
+                                    padding: const EdgeInsets.only(left: 20),
+                                    width: double.infinity,
+                                    height: 40,
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      '${widget.args!['category']}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w100,
+                                      ),
+                                    ),
+                                  ),
                           ),
                           const SizedBox(
                             height: 20,
@@ -415,7 +495,7 @@ class _ProductEditorState extends State<ProductEditor> {
                             onTap: () {
                               if (!isSaving) {
                                 if (_isEditing) {
-                                  updateProduct(widget.args!['petId']);
+                                  updateProduct(widget.args!['productId']);
                                 } else {
                                   postProduct();
                                 }

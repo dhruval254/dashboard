@@ -114,18 +114,18 @@ class _ProductScreenState extends State<ProductScreen> {
                                               MainAxisAlignment.center,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            const Text(
-                                              'Something Went Wrong...',
+                                          children: const <Widget>[
+                                            Text(
+                                              'Image failed to load...',
                                             ),
-                                            TextButton(
-                                              onPressed: () {
-                                                setState(() {});
-                                              },
-                                              child: const Text(
-                                                'Refresh',
-                                              ),
-                                            ),
+                                            // TextButton(
+                                            //   onPressed: () {
+                                            //     setState(() {});
+                                            //   },
+                                            //   child: const Text(
+                                            //     'Refresh',
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                       );

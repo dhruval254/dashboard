@@ -46,9 +46,32 @@ class DatabaseService {
       index++;
     }
 
-    productDoc.update({
+    await productDoc.update({
       'uid': productDoc.id,
       'imageList': FieldValue.arrayUnion(productImageLinkList),
+    });
+  }
+
+  Future updateProducts(
+    String productId,
+    String productName,
+    String category,
+    String detail,
+    int stock,
+    int price,
+    int discount,
+    bool isPopular,
+    bool isOnSale,
+  ) async {
+    await productCollection.doc(productId).update({
+      'productName': productName,
+      'category': category,
+      'detail': detail,
+      'stock': stock,
+      'price': price,
+      'discount': discount,
+      'isOnSale': isOnSale,
+      'isPopular': isPopular,
     });
   }
 

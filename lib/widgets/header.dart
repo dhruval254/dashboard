@@ -19,9 +19,9 @@ class Header extends StatelessWidget {
           ),
           const Spacer(
           ),
-        const Expanded(
-          child: SearchField(),
-        ),
+        // const Expanded(
+        //   child: SearchField(),
+        // ),
         const ProfileCard(),
       ],
     );
@@ -55,7 +55,7 @@ class ProfileCard extends StatelessWidget {
           ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-              child: Text("Dummy Dummy"),
+              child: Text("Sarita Yadav"),
             ),
           const Icon(Icons.keyboard_arrow_down),
         ],

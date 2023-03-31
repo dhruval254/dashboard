@@ -12,6 +12,7 @@ class DatabaseService {
     String category,
     String detail,
     int stock,
+    int bought,
     int price,
     int discount,
     List<Uint8List> productImageList,
@@ -29,6 +30,7 @@ class DatabaseService {
       'detail': detail,
       'imageList': null,
       'stock': stock,
+      'bought': bought,
       'price': price,
       'discount': discount,
       'isOnSale': isOnSale,
@@ -83,6 +85,26 @@ class DatabaseService {
 
   Future<QuerySnapshot> getProducts() async {
     QuerySnapshot productData = await productCollection.get();
+
+    return productData;
+  }
+
+  Future<QuerySnapshot> getDogProducts() async {
+    QuerySnapshot productData =
+        await productCollection.where('category', isEqualTo: 'dog').get();
+
+    return productData;
+  }
+
+  Future<QuerySnapshot> getCatProducts() async {
+    QuerySnapshot productData =
+        await productCollection.where('category', isEqualTo: 'cat').get();
+
+    return productData;
+  }
+
+  Future<DocumentSnapshot> getProductsUsingUid(String productId) async {
+    DocumentSnapshot productData = await productCollection.doc(productId).get();
 
     return productData;
   }

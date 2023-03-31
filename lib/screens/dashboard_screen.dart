@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../constants.dart';
 import '../models/recent_file.dart';
 import '../widgets/header.dart';
-import '../widgets/my_files.dart';
+import '../widgets/stock.dart';
 import '../widgets/storage_details.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -18,8 +18,8 @@ class DashboardScreen extends StatelessWidget {
         padding: const EdgeInsets.all(defaultPadding),
         child: Column(
           children: [
-            const Header(),
-            const SizedBox(
+             Header(),
+             SizedBox(
               height: defaultPadding,
             ),
             Row(
@@ -28,9 +28,9 @@ class DashboardScreen extends StatelessWidget {
                 Expanded(
                   flex: 5,
                   child: Column(
-                    children: [
-                      const MyFiles(),
-                      const SizedBox(
+                    children:  [
+                       Stock(),
+                       SizedBox(
                         height: defaultPadding,
                       ),
                       Container(
@@ -45,7 +45,7 @@ class DashboardScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Recent Files",
+                              "Recent Orders",
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                             SizedBox(

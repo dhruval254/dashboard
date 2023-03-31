@@ -1,14 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import './firebase_options.dart';
 
-import 'constants.dart';
-import 'router.dart';
-import 'screens/main_screen.dart';
+import './constants.dart';
+import './router.dart';
+
+import './screens/login_screen.dart';
+import './screens/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,14 +30,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: "saritayadav1609@gmail.com", password: "test1234");
-    super.initState();
-  }
-
-  @override
+   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -47,7 +42,9 @@ class _MyAppState extends State<MyApp> {
         canvasColor: secondaryColor,
       ),
       onGenerateRoute: (routeSettings) => generateRoute(routeSettings),
-      home: const MainScreen(),
+      home: FirebaseAuth.instance.currentUser != null
+          ? const MainScreen()
+          : const LoginScreen(),
     );
   }
 }

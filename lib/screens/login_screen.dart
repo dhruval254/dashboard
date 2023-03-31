@@ -1,127 +1,191 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:dashboard/screens/main_screen.dart';
-import 'package:dashboard/widgets/custom_button.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-// import '../services/database_services.dart';
-import '../widgets/custom_textbox.dart';
-// import '../widgets/my_snackbar.dart';
+import './main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const String routeName = '/login-screen';
+  static const routeName = '/login';
+
   const LoginScreen({super.key});
 
-  // @override
-  // State<LoginScreen> createState() => _LoginScreenState();
-
   @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-// class _LoginScreenState extends State<LoginScreen> {
-//   final _formKey = GlobalKey<FormState>();
-//   // final authService = AuthService();
-//   bool _isLoading = false;
-//   String email = '';
-//   String password = '';
+class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
 
-//   void _signin() async {
-//     if (_formKey.currentState!.validate()) {
-//       setState(() {
-//         _isLoading = true;
-//       });
+  String email = '';
+  String password = '';
 
-//       _formKey.currentState!.save();
+  bool isLoading = false;
 
-//       // dynamic value =
-//       //     await authService.loginUserWithEmailAndPassword(email, password);
+  Future<void> login() async {
+    // saritayadav1609@gmail.com
 
-//       // if (value == true) {
-//       //   QuerySnapshot snapshot =
-//       //       await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
-//       //           .getUserDataUsingEmail(email);
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
 
-//         // await HelperFunction.setAdminEmail(email);
+      setState(() {
+        isLoading = true;
+      });
 
-//       //   setState(() {
-//       //     _isLoading = false;
-//       //   });
-
-//       //   if (mounted) {
-//       //     Navigator.of(context).pushNamedAndRemoveUntil(
-//       //       MainScreen.routeName,
-//       //       (route) => false,
-//       //     );
-//       //   }
-//       // } else {
-//       //   setState(() {
-//       //     _isLoading = false;
-//       //   });
-
-//         // if (mounted) {
-//         //   MySnackbar.showSnackbar(context, Color(0XFFFF5252), value);
-//         // }
-//       }
-//     }
-//   }
-
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: SafeArea(
-        child: SingleChildScrollView(
-      child: Form(
-        // key: _formKey,
-        child: Column(
-          children: <Widget>[
-            CustomTextbox(
-              prefixIcon: Icons.email_outlined,
-              labelData: 'Email',
-              maxLines: 1,
-              isHidden: false,
-              validator: (value) {
-                if (value == null ||
-                    value.isEmpty ||
-                    !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}')
-                        .hasMatch(value)) {
-                  return 'Please enter valid email';
-                }
-
-                return null;
-              },
-              // onSave: (value) {
-              //   email = value!.trim();
-              // },
+      if (email != 'saritayadav1609@gmail.com') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Invalid email or password',
+              style: TextStyle(
+                fontSize: 18,
+              ),
             ),
-            const SizedBox(height: 15),
-            CustomTextbox(
-              prefixIcon: Icons.lock_outline,
-              textInputType: TextInputType.text,
-              maxLines: 1,
-              labelData: 'Password',
-              isHidden: true,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter password';
-                }
+          ),
+        );
 
-                if (value.length <= 6) {
-                  return 'Please enter password of more than 6 characters';
-                }
+        setState(() {
+          isLoading = false;
+        });
 
-                return null;
-              },
-              // onSave: (value) {
-              //   password = value!;
-              // },
+        return;
+      }
+
+      try {
+        final usercredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password);
+
+        if (usercredential.user != null) {
+          if (mounted) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              MainScreen.routeName,
+              (route) => false,
+            );
+          }
+
+          setState(() {
+            isLoading = false;
+          });
+
+          return;
+        }
+      } on FirebaseAuthException catch (error) {
+        if (error.message != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                error.message!,
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
             ),
-            const CustomButton(
-              title: 'Login Button',
+          );
+        }
+
+        setState(() {
+          isLoading = false;
+        });
+
+        return;
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: SizedBox(
+          height: 350,
+          width: 550,
+          child: Card(
+            elevation: 5,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    'Login to continue',
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                            label: Text(
+                              'Email',
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}')
+                                    .hasMatch(value)) {
+                              return 'Please enter valid email';
+                            }
+
+                            return null;
+                          },
+                          onSaved: (value) {
+                            email = value!.trim();
+                          },
+                        ),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            label: Text(
+                              'Password',
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter password';
+                            }
+
+                            if (value.length <= 6) {
+                              return 'Please enter password of more than 6 characters';
+                            }
+
+                            return null;
+                          },
+                          onSaved: (value) {
+                            password = value!.trim();
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: isLoading ? () {} : login,
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            minimumSize: const Size.fromHeight(50),
+                          ),
+                          child: Center(
+                            child: isLoading
+                                ? const CircularProgressIndicator()
+                                : const Text(
+                                    'Login',
+                                  ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       ),
-    )),
-  );
+    );
+  }
 }

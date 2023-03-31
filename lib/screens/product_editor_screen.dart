@@ -41,6 +41,7 @@ class _ProductEditorState extends State<ProductEditor> {
   String productName = '';
   String productDetail = '';
   int productStock = 0;
+  int productBought = 0;
   int productPrice = 0;
   int productDiscount = 0;
   String productCategory = '';
@@ -105,6 +106,7 @@ class _ProductEditorState extends State<ProductEditor> {
         productCategory,
         productDetail,
         productStock,
+        productBought,
         productPrice,
         productDiscount,
         productImageList,

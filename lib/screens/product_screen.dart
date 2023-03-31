@@ -80,7 +80,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: Colors.white54,
+                            color: Colors.grey,
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.2),
@@ -275,12 +275,6 @@ class _ProductScreenState extends State<ProductScreen> {
                                           backgroundColor: Colors.red),
                                       child: const Text(
                                         'Delete',
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {},
-                                      child: const Text(
-                                        'View',
                                       ),
                                     ),
                                   ],

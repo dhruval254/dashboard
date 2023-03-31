@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'drawer_list_tile.dart';
 
@@ -57,12 +58,37 @@ class SideMenu extends StatelessWidget {
               },
             ),
             DrawerListTile(
-              title: "Login",
-              svgSrc: 'assets/icons/Search.svg',
-              press: () {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  LoginScreen.routeName,
-                  (route) => false,
+              title: "Log out",
+              svgSrc: 'assets/icons/menu_logout.svg',
+              press: () async {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Log out?'),
+                      content: const Text('Are you sure you want to logout?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () async {
+                            await FirebaseAuth.instance.signOut();
+
+                            // ignore: use_build_context_synchronously
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              LoginScreen.routeName,
+                              (route) => false,
+                            );
+                          },
+                          child: const Text('Yes'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('No'),
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
             ),

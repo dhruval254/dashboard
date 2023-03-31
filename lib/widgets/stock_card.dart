@@ -3,15 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../constants.dart';
-import '../../../models/my_files.dart';
 
-class FileInfoCard extends StatelessWidget {
-  const FileInfoCard({
+class StockCard extends StatelessWidget {
+  final String category;
+  final int bought;
+  final int totalStock;
+  final Color color;
+
+  const StockCard({
+    required this.category,
+    required this.bought,
+    required this.totalStock,
+    required this.color,
     Key? key,
-    required this.info,
   }) : super(key: key);
-
-  final CloudStorageInfo info;
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +40,14 @@ class FileInfoCard extends StatelessWidget {
                 height: 40,
                 width: 40,
                 decoration: BoxDecoration(
-                  color: info.color.withOpacity(0.1),
+                  color: color.withOpacity(0.1),
                   borderRadius: const BorderRadius.all(
                     Radius.circular(10),
                   ),
                 ),
                 child: SvgPicture.asset(
-                  info.svgSrc,
-                  color: info.color,
+                  'assets/icons/paw-print.svg',
+                  color: color,
                 ),
               ),
               const Icon(
@@ -52,30 +57,30 @@ class FileInfoCard extends StatelessWidget {
             ],
           ),
           Text(
-            info.title,
+            category,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           ProgressLine(
-            color: info.color,
-            percentage: info.percentage,
+            color: color,
+            percentage: (bought / totalStock) * 100,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "${info.numOfFiles} Files",
+                "$bought products sold",
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
                     ?.copyWith(color: Colors.white70),
               ),
               Text(
-                info.totalStorage,
+                "$totalStock products",
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
-                    ?.copyWith(color: Colors.white),
+                    ?.copyWith(color: Colors.white70),
               ),
             ],
           ),
@@ -93,7 +98,7 @@ class ProgressLine extends StatelessWidget {
   }) : super(key: key);
 
   final Color color;
-  final int percentage;
+  final double percentage;
 
   @override
   Widget build(BuildContext context) {

@@ -18,8 +18,8 @@ class DashboardScreen extends StatelessWidget {
         padding: const EdgeInsets.all(defaultPadding),
         child: Column(
           children: [
-             Header(),
-             SizedBox(
+             const Header(),
+             const SizedBox(
               height: defaultPadding,
             ),
             Row(
@@ -29,8 +29,8 @@ class DashboardScreen extends StatelessWidget {
                   flex: 5,
                   child: Column(
                     children:  [
-                       Stock(),
-                       SizedBox(
+                       const Stock(),
+                       const SizedBox(
                         height: defaultPadding,
                       ),
                       Container(

@@ -6,6 +6,7 @@ import './storage_service.dart';
 
 class DatabaseService {
   final productCollection = FirebaseFirestore.instance.collection('products');
+  final ordersCollection = FirebaseFirestore.instance.collection('orders');
 
   Future addProduct(
     String productName,
@@ -107,5 +108,17 @@ class DatabaseService {
     DocumentSnapshot productData = await productCollection.doc(productId).get();
 
     return productData;
+  }
+
+  Future<QuerySnapshot> getOrders() async {
+    QuerySnapshot orderData = await ordersCollection.get();
+
+    return orderData;
+  }
+
+  Future<void> setDelieveryStatusTrue(String orderUid) async {
+    await ordersCollection.doc(orderUid).update({
+      'isOrderDelivered': true,
+    });
   }
 }

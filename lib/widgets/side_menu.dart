@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../screens/orders.dart';
 import 'drawer_list_tile.dart';
 
 import '../screens/main_screen.dart';
@@ -45,7 +46,10 @@ class SideMenu extends StatelessWidget {
             DrawerListTile(
               title: "Orders",
               svgSrc: "assets/icons/menu_task.svg",
-              press: () {},
+              press: () {Navigator.of(context).pushNamedAndRemoveUntil(
+                  Orders.routeName,
+                  (route) => false,
+                );},
             ),
             DrawerListTile(
               title: "Products",

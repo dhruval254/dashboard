@@ -1,3 +1,4 @@
+import 'package:dashboard/screens/orders.dart';
 import 'package:dashboard/screens/product_editor_screen.dart';
 import 'package:dashboard/screens/login_screen.dart';
 import 'package:dashboard/screens/main_screen.dart';
@@ -18,6 +19,12 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (context) => const Transactions(),
+      );
+
+      case Orders.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (context) => const Orders(),
       );
 
     case LoginScreen.routeName:

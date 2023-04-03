@@ -36,7 +36,7 @@ class _OrdersState extends State<Orders> {
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.9,
+                    height: MediaQuery.of(context).size.height * 0.89,
                     child: FutureBuilder(
                       future: DatabaseService().getOrders(),
                       builder: (context, snapshot) {

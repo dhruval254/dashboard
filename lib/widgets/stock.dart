@@ -86,26 +86,27 @@ class _FileInfoCardGridViewState extends State<FileInfoCardGridView> {
               );
             }
 
-            int boughts = 0;
+            int stocks = 0;
             int totalStocks = 0;
 
             for (var element in snapshot.data!.docs) {
               Map product = element.data() as Map;
 
-              totalStocks += product['stock'] as int;
+              stocks += product['stock'] as int;
             }
 
             for (var element in snapshot.data!.docs) {
               Map product = element.data() as Map;
 
-              boughts += product['bought'] as int;
+              totalStocks += product['totalStock'] as int;
             }
+            int remaining = totalStocks - stocks;
 
             return StockCard(
               category: 'Dog Products',
               color: Colors.blueAccent,
+              remaining: remaining,
               totalStock: totalStocks,
-              bought: boughts,
             );
           },
         ),
@@ -119,26 +120,26 @@ class _FileInfoCardGridViewState extends State<FileInfoCardGridView> {
               );
             }
 
-            int boughts = 0;
+            int stocks = 0;
             int totalStocks = 0;
 
             for (var element in snapshot.data!.docs) {
               Map product = element.data() as Map;
 
-              totalStocks += product['stock'] as int;
+              stocks += product['stock'] as int;
             }
 
             for (var element in snapshot.data!.docs) {
               Map product = element.data() as Map;
 
-              boughts += product['bought'] as int;
+              totalStocks += product['totalStock'] as int;
             }
-
+            int remaining = totalStocks - stocks;
             return StockCard(
               category: 'Cat Product',
               color: Colors.orangeAccent,
+              remaining: remaining,
               totalStock: totalStocks,
-              bought: boughts,
             );
           },
         ),

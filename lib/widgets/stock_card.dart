@@ -6,13 +6,13 @@ import '../../../constants.dart';
 
 class StockCard extends StatelessWidget {
   final String category;
-  final int bought;
+  final int remaining;
   final int totalStock;
   final Color color;
 
   const StockCard({
     required this.category,
-    required this.bought,
+    required this.remaining,
     required this.totalStock,
     required this.color,
     Key? key,
@@ -63,13 +63,13 @@ class StockCard extends StatelessWidget {
           ),
           ProgressLine(
             color: color,
-            percentage: (bought / totalStock) * 100,
+            percentage: (remaining / totalStock) * 100,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "$bought products sold",
+                "$remaining products sold",
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall

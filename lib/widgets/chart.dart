@@ -57,6 +57,12 @@ class _ChartState extends State<Chart> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    pieChartSectiondata.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 200,

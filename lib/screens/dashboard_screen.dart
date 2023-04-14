@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants.dart';
-import '../models/recent_file.dart';
 import '../widgets/header.dart';
 import '../widgets/stock.dart';
 import '../widgets/storage_details.dart';
@@ -176,33 +175,5 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  DataRow recentFileDataRow(RecentFile orderInfo) {
-    return DataRow(
-      cells: [
-        DataCell(
-          Row(
-            children: [
-              SvgPicture.asset(
-                orderInfo.icon,
-                height: 30,
-                width: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(
-                  defaultPadding,
-                ),
-                child: Text(orderInfo.title),
-              ),
-            ],
-          ),
-        ),
-        DataCell(
-          Text(orderInfo.date),
-        ),
-        DataCell(
-          Text(orderInfo.size),
-        ),
-      ],
-    );
-  }
+//
 }

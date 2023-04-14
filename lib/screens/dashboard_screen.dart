@@ -1,8 +1,6 @@
 import 'package:dashboard/services/database_service.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_svg/flutter_svg.dart';
-
 import '../constants.dart';
 import '../widgets/header.dart';
 import '../widgets/stock.dart';
@@ -55,7 +53,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
+                              children: const <Widget>[
                                 Text('Order uid'),
                                 Text('Order Date'),
                                 Text('City')
